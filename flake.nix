@@ -2,7 +2,7 @@
   description = "A universal interpreter front-end";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:nixos/nixpkgs?rev=ecb441f22067ba1d6312f4932a7c64efa8d19a7b";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -11,7 +11,7 @@
       overlays.default = final: prev: {
         prybar = prev.lib.recurseIntoAttrs {
           inherit (self.packages.${prev.system})
-            prybar-elisp prybar-julia prybar-nodejs
+            prybar-elisp prybar-julia prybar-lua prybar-nodejs
             prybar-python2 prybar-python3 prybar-python38 prybar-python310 prybar-python311
             prybar-scala prybar-sqlite prybar-tcl;
         };
@@ -40,7 +40,7 @@
           bluezSupport = true;
           x11Support = true;
         };
-        
+
         python310Full = pkgs.python310.override {
           self = python310Full;
           pythonAttr = "python310Full";
@@ -87,6 +87,17 @@
             cgoPkgs = "python-3.11-embed";
             cgoExtraCflags = "-DPYTHON_3_11";
             buildInputs = [ pkgs.libxcrypt python311Full ];
+          };
+
+          prybar-lua = buildPrybar {
+            language = "lua";
+            buildInputs = [ pkgs.lua5_1 pkgs.readline ];
+          };
+
+          prybar-clojure = buildPrybar {
+            language = "clojure";
+            buildInputs = [ clojureWithCP ];
+            binaries = [ pkgs.jdk11_headless ];
           };
 
           prybar-elisp = buildPrybar { language = "elisp"; };
