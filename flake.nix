@@ -2,7 +2,7 @@
   description = "A universal interpreter front-end";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -31,11 +31,15 @@
 
         julia = import ./languages/julia/julia.nix { inherit pkgs; };
 
-        clojureWithCP =
-          import ./languages/clojure/wrappedClojure.nix { inherit pkgs; };
-
-        python38Full = pkgs.python38Full.override {
+        python38Full = pkgs.python3.override {
           self = python38Full;
+          sourceVersion = {
+            major = "3";
+            minor = "8";
+            patch = "18";
+            suffix = "";
+          };
+          hash = "sha256-P/txzTSaMmunsvrcfn34a6V33ZxJF+UqhAGtvadAXj8=";
           pythonAttr = "python38Full";
           bluezSupport = true;
           x11Support = true;
@@ -127,9 +131,9 @@
           buildInputs = [
             pkgs.libxcrypt
             pkgs.nodejs
-            pkgs.python38Full
-            pkgs.python310Full
-            pkgs.python311Full
+            python38Full
+            python310Full
+            python311Full
             pkgs.readline
             pkgs.zlib
             pkgs.sqlite
